@@ -5,7 +5,7 @@ import io
 import ssl
 import urllib.request
 
-url = "https://data.kcg.gov.tw/File/DirectDownload/80bbbbd3-9ee4-4244-98e9-b4c08deda91b"
+url = "https://data.ntpc.gov.tw/api/datasets/781b822e-214a-4b9a-b4db-32c9f4626d98/csv/file"
 
 context = ssl.create_default_context()
 context.check_hostname = False
