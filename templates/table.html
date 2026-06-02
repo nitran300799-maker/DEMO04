@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>新北市文化活動資料查詢系統</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --tech-blue: #1a73e8;
+            --light-bg: #f8fbff;
+            --border-light: #e0e7ff;
+            --text-dark: #1a202c;
+            --text-gray: #718096;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f8fbff 0%, #f0f4ff 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding-top: 30px;
+            padding-bottom: 40px;
+        }
+
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Section */
+        .header-section {
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--tech-blue);
+            letter-spacing: -0.5px;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            margin-bottom: 0;
+            line-height: 1.6;
+        }
+
+        /* Dashboard Section */
+        .dashboard-section {
+            margin-bottom: 40px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(26, 115, 232, 0.08);
+            border-left: 4px solid var(--tech-blue);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(26, 115, 232, 0.15);
+        }
+
+        .dashboard-label {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .dashboard-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--tech-blue);
+        }
+
+        .dashboard-subtitle {
+            font-size: 0.75rem;
+            color: #cbd5e1;
+            margin-top: 8px;
+        }
+
+        .dashboard-info {
+            background: rgba(26, 115, 232, 0.05);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .dashboard-info-label {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            margin-bottom: 4px;
+        }
+
+        .dashboard-info-value {
+            font-size: 0.9rem;
+            color: var(--tech-blue);
+            word-break: break-all;
+            font-family: "Courier New", monospace;
+        }
+
+        /* Table Section */
+        .table-section {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(26, 115, 232, 0.1);
+            overflow: hidden;
+        }
+
+        .table-section-header {
+            background: linear-gradient(135deg, var(--tech-blue) 0%, #1556c0 100%);
+            padding: 24px;
+            color: white;
+        }
+
+        .table-section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0;
+            margin-bottom: 8px;
+        }
+
+        .table-section-desc {
+            font-size: 0.95rem;
+            opacity: 0.95;
+            margin: 0;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            padding: 24px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        .data-table thead {
+            background: #f0f4ff;
+            border-bottom: 2px solid var(--tech-blue);
+        }
+
+        .data-table thead th {
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--tech-blue);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid var(--border-light);
+            transition: background-color 0.2s ease;
+        }
+
+        .data-table tbody tr:hover {
+            background-color: #f8fbff;
+        }
+
+        .data-table tbody td {
+            padding: 14px 12px;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            vertical-align: top;
+        }
+
+        .field-label {
+            display: inline-block;
+            background: var(--border-light);
+            color: var(--text-gray);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .text-truncate-custom {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break: break-word;
+        }
+
+        /* Button Styles */
+        .btn-custom {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-primary-custom {
+            background: var(--tech-blue);
+            color: white;
+            border: 1px solid var(--tech-blue);
+        }
+
+        .btn-primary-custom:hover {
+            background: #1556c0;
+            border-color: #1556c0;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary-custom {
+            background: white;
+            color: var(--tech-blue);
+            border: 1px solid var(--tech-blue);
+        }
+
+        .btn-secondary-custom:hover {
+            background: rgba(26, 115, 232, 0.05);
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+        .btn-group-custom {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Footer */
+        .footer-note {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .data-table {
+                font-size: 0.85rem;
+            }
+
+            .data-table thead th,
+            .data-table tbody td {
+                padding: 10px 8px;
+            }
+
+            .btn-custom {
+                padding: 6px 12px;
+                font-size: 0.75rem;
+            }
+
+            .btn-group-custom {
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header -->
+        <div class="header-section">
+            <h1 class="page-title">📊 新北市文化活動資料查詢</h1>
+            <p class="page-subtitle">即時從官方資料來源讀取活動列表，透過美觀的資料儀表板快速瀏覽與詳細內容檢視。</p>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div class="dashboard-section">
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="dashboard-label">📌 總列數</div>
+                    <div class="dashboard-value">{{ data.total_rows }}</div>
+                    <div class="dashboard-subtitle">筆資料</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="dashboard-label">📋 欄位數</div>
+                    <div class="dashboard-value">{{ data.total_cols }}</div>
+                    <div class="dashboard-subtitle">個欄位</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="dashboard-label">💾 資料大小</div>
+                    <div class="dashboard-value">{{ "%.1f"|format(data.data_length / 1024) }}</div>
+                    <div class="dashboard-subtitle">KB</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="dashboard-label">🔗 資料來源</div>
+                    <div class="dashboard-value">官方 API</div>
+                    <div class="dashboard-subtitle">實時更新</div>
+                </div>
+            </div>
+
+            <div class="dashboard-info">
+                <div class="dashboard-info-label">📡 API 來源 URL：</div>
+                <div class="dashboard-info-value">{{ data.url }}</div>
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="table-section">
+            <div class="table-section-header">
+                <h2 class="table-section-title">🎭 文化活動資料表</h2>
+                <p class="table-section-desc">Content-Type: {{ data.content_type }}</p>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>發布者</th>
+                            <th>類型</th>
+                            <th>開始日期</th>
+                            <th>結束日期</th>
+                            <th>標題</th>
+                            <th>詳細描述</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in data.rows %}
+                        <tr>
+                            <td>
+                                <span class="field-label">{{ row.author }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-info text-dark">{{ row.type }}</span>
+                            </td>
+                            <td>
+                                <strong>{{ row.startdate }}</strong>
+                            </td>
+                            <td>
+                                {{ row.enddate }}
+                            </td>
+                            <td>
+                                <div class="text-truncate-custom">
+                                    <strong>{{ row.title }}</strong>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-truncate-custom">
+                                    {{ row.description }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="btn-group-custom">
+                                    {% if row.link %}
+                                    <a class="btn-custom btn-primary-custom" href="{{ row.link }}" target="_blank" rel="noreferrer">🔗 連結</a>
+                                    {% endif %}
+                                    <a class="btn-custom btn-secondary-custom" href="/details/{{ loop.index0 }}">📖 詳情</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer-note">
+                ✅ 此頁面顯示所有資料列。若資料源更新，請刷新頁面取得最新內容。
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
